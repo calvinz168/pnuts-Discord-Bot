@@ -14,7 +14,7 @@ import time
 
 client = commands.Bot(command_prefix = "")
 
-global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
+global mcGen,pnutGen,calvin1,calvin2,nathan,caleb,adam,marcus,vivian
 
 #Channels -----------------------  
 #747530161045504132 - pnut test         - general
@@ -25,7 +25,7 @@ global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
 #events -----------------------           
 @client.event
 async def on_ready():
-    global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian,caitlin
+    global mcGen,pnutGen,calvin1,calvin2,nathan,caleb,adam,marcus,vivian,caitlin
     mcGen = client.get_channel(574067087442575360)
     pnutGen = client.get_channel(747530161045504132)
     calvin1 = client.get_user(241383496629616641)
@@ -109,13 +109,9 @@ async def fallacy(ctx):
 async def remind(ctx):
     await ctx.send("3. New fucking rule, if you say @ everyone nibba I'm literally gonna revoke your perms")
 
-@client.command(aliases = ["No","NO","Nah","nah","Nope","nope"])
-async def no(ctx):
-    await ctx.send("yes")
-
-@client.command(aliases = ["Yes", "YES","Yup","yup","Yep","yep"])
-async def yes(ctx):
-    await ctx.send("no")
+@client.command(aliases = ["Robust"])
+async def robust(ctx):
+    await ctx.send("No more Mrs. Nice Quesnelle")
 
     
 #math -----------------------  
@@ -174,8 +170,10 @@ async def pic(ctx,arg):
 #utility commands -----------------------  
 @client.command()
 async def t(ctx):
+    print(ctx.author)
     receiverMat = [["calvin1",calvin1],["nathan",nathan],["caleb",caleb],["adam",adam],["marcus",marcus],["vivian",vivian],["caitlin",caitlin],["mcGen",mcGen],["pnutGen",pnutGen]]
-    if ctx.author == calvin1 or ctx.author == calvin2:
+    if ((ctx.author == calvin1) or (ctx.author == calvin2)):
+        print("ASD")
         await ctx.message.delete()
         print("")
         print("SEND MESSAGE--------------------")
@@ -263,17 +261,26 @@ async def on_message(ctx):
     randNumba = random.randint(1,1000)
     groovy = client.get_user(234395307759108106)
     #Mute Nathan
-    if ctx.author == vivian:
-        print("\n")
-        print("Message-------------------------")
-        print(f"Author: ",{ctx.author})
-        print("Message:",ctx.content)
-        await ctx.send("shut up nerd")
-        return await ctx.delete()
-    for i in tiananmen:
-        if ctx.content == i:
-            await ctx.send("shhh")
-            return await ctx.delete()
+##    if ctx.author == vivian:
+##        print("\n")
+##        print("Message-------------------------")
+##        print(f"Author: ",{ctx.author})
+##        print("Message:",ctx.content)
+##        await ctx.send("shut up nerd")
+##        return await ctx.delete()
+##    for i in tiananmen:
+##        if ctx.content == i:
+##            await ctx.send("shhh")
+##            return await ctx.delete()
+        
+    #Yes or No command
+    if (ctx.content[0:3] == "yes") and (ctx.author != client.user):
+        noStr = "no" + ctx.content[3:]
+        return await ctx.channel.send(noStr)
+    elif (ctx.content[0:2] == "no") and (ctx.author != client.user):
+        noStr = "yes" + ctx.content[2:]
+        return await ctx.channel.send(noStr)
+    
     #1/1000 chance for hannah or reminder
     if ctx.author != client.user and randNumba == 999:
         return await ctx.channel.send(file=discord.File("hannah2.png"))
