@@ -14,7 +14,7 @@ import time
 
 client = commands.Bot(command_prefix = "")
 
-global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
+global mcGen,pnutGen,calvin1,calvin2,nathan,caleb,adam,marcus,vivian
 
 #Channels -----------------------  
 #747530161045504132 - pnut test         - general
@@ -25,7 +25,7 @@ global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
 #events -----------------------           
 @client.event
 async def on_ready():
-    global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
+    global mcGen,pnutGen,calvin1,calvin2,nathan,caleb,adam,marcus,vivian,caitlin
     mcGen = client.get_channel(574067087442575360)
     pnutGen = client.get_channel(747530161045504132)
     calvin1 = client.get_user(241383496629616641)
@@ -35,6 +35,7 @@ async def on_ready():
     adam    = client.get_user(181920051350339584)
     marcus  = client.get_user(510448844052496385)
     vivian  = client.get_user(303160967410352129)
+    caitlin = client.get_user(342841594778615827)
    # await channel.edit(topic="Ready")
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="c gang"))
     print("Bot is ready")
@@ -62,7 +63,6 @@ async def join(ctx):
     print(channel)
     #await client.join_voice_channel(channel)
 
-    
 @client.event
 async def on_member_update(before, after):
     if(str(after) != "nuts#9791"):
@@ -109,13 +109,9 @@ async def fallacy(ctx):
 async def remind(ctx):
     await ctx.send("3. New fucking rule, if you say @ everyone nibba I'm literally gonna revoke your perms")
 
-@client.command(aliases = ["No","NO","Nah","nah","Nope","nope"])
-async def no(ctx):
-    await ctx.send("yes")
-
-@client.command(aliases = ["Yes", "YES","Yup","yup","Yep","yep"])
-async def yes(ctx):
-    await ctx.send("no")
+@client.command(aliases = ["Robust"])
+async def robust(ctx):
+    await ctx.send("No more Mrs. Nice Quesnelle")
 
     
 #math -----------------------  
@@ -165,7 +161,7 @@ async def divide(ctx, arg, arg2,):
 @client.command(aliases = ["Pic","PIC","Picture","picture"])
 async def pic(ctx,arg):
     picMat = [["josh",11],["adam",12],["marcus",5],["calvin",12],["vivian",9],["caleb",15],["caitlin",5],["hannah",2]]
-    for i in range(0,8):
+    for i in range(0,len(picMat)):
         if arg == picMat[i][0]:
             rand = random.randint(1,picMat[i][1])
             return await ctx.send(file=discord.File(f'{picMat[i][0]}{rand}.png'))
@@ -174,20 +170,22 @@ async def pic(ctx,arg):
 #utility commands -----------------------  
 @client.command()
 async def t(ctx):
-    global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
-    if ctx.author == calvin1 or ctx.author == calvin2:
+    print(ctx.author)
+    receiverMat = [["calvin1",calvin1],["nathan",nathan],["caleb",caleb],["adam",adam],["marcus",marcus],["vivian",vivian],["caitlin",caitlin],["mcGen",mcGen],["pnutGen",pnutGen]]
+    if ((ctx.author == calvin1) or (ctx.author == calvin2)):
+        print("ASD")
         await ctx.message.delete()
         print("")
         print("SEND MESSAGE--------------------")
         text = input("Message: ")
-        print("") 
-        receiverDict={"calvin1":calvin1,"nathan":nathan,"caleb":caleb,"adam":adam,"marcus":marcus,"vivian":vivian,"mcGen":mcGen,"pnutGen":pnutGen}
-        for i in receiverDict:
-            print(receiverDict[i])
+        print("")
+        print("Available Receivers:")
+        for i in range(len(receiverMat)):
+            print(receiverMat[i][0])
         receiver = input("Receiver: ")
-        for i in receiverDict:
-            if receiver == i:
-                await receiverDict[i].send(text)
+        for i in range(len(receiverMat)):
+            if receiver == receiverMat[i][0]:
+                await receiverMat[i][1].send(text)
                 
 @client.command()
 async def weather(ctx):
@@ -225,7 +223,6 @@ async def map(ctx):
 
 @client.command()
 async def ping(ctx,user:discord.Member,arg):
-    global channel,calvin1,nathan,caleb,adam,marcus,vivian
     if ctx.author != nathan:
         try:
             for i in range(0,int(arg)):
@@ -242,8 +239,6 @@ async def eightball(ctx):
 
 @client.command()
 async def mute(ctx, member: discord.Member):
-    global mcGen,pnutGen,calvin1,nathan,caleb,adam,marcus,vivian
- 
     print("mute")
     if ctx.message.author == calvin1 or ctx.message.author == adam :
         print("ASD")
@@ -260,23 +255,32 @@ async def vote(ctx):
 
 @client.event
 async def on_message(ctx):
-    global channel,calvin1,nathan,caleb,adam,marcus,vivian
     tiananmen = ["June 4 1989","june 4 1989","june 4th 1989","June 4th 1989","06 04 1989"
                  ,"June 4, 1989","june 4, 1989","1989 June 4","1989 june 4","1989 4 June"
                  ,"1989 4 june","06/04/89","06/04/1989","j u n e  4  1 9 8 9","the fourth of june 1989"]
     randNumba = random.randint(1,1000)
     groovy = client.get_user(234395307759108106)
     #Mute Nathan
-    if ctx.author == vivian:
-        print("\n")
-        print("Message-------------------------")
-        print(f"Author: ",{ctx.author})
-        print("Message:",ctx.content)
-        await ctx.send("shut up nerd")
-        return await ctx.delete()
-    for i in tiananmen:
-        if ctx.content == i:
-            return await ctx.delete()
+##    if ctx.author == vivian:
+##        print("\n")
+##        print("Message-------------------------")
+##        print(f"Author: ",{ctx.author})
+##        print("Message:",ctx.content)
+##        await ctx.send("shut up nerd")
+##        return await ctx.delete()
+##    for i in tiananmen:
+##        if ctx.content == i:
+##            await ctx.send("shhh")
+##            return await ctx.delete()
+        
+    #Yes or No command
+    if (ctx.content[0:3] == "yes") and (ctx.author != client.user):
+        noStr = "no" + ctx.content[3:]
+        return await ctx.channel.send(noStr)
+    elif (ctx.content[0:2] == "no") and (ctx.author != client.user):
+        noStr = "yes" + ctx.content[2:]
+        return await ctx.channel.send(noStr)
+    
     #1/1000 chance for hannah or reminder
     if ctx.author != client.user and randNumba == 999:
         return await ctx.channel.send(file=discord.File("hannah2.png"))
