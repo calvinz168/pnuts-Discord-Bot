@@ -113,6 +113,21 @@ async def remind(ctx):
 async def robust(ctx):
     await ctx.send("No more Mrs. Nice Quesnelle")
 
+@client.command(aliases = ["Grape","grapes","Grapes"])
+async def grape(ctx):
+    await ctx.message.add_reaction("🍇")
+
+@client.command(aliases = ["No","Nah","nah","Nope","nope"])
+async def no(ctx, *args):
+    yesStr = "yes "
+    yesStr = yesStr + ("".join(args[:]))
+    await ctx.send(yesStr)
+
+@client.command(aliases = ["Yes","Yep","yep","Yeah","yeah","Ye","ye"])
+async def yes(ctx, *args):
+    yesStr = "no "
+    yesStr = yesStr + ("".join(args[:]))
+    await ctx.send(yesStr)
     
 #math -----------------------  
 @client.command(aliases = ["Add"])
@@ -273,14 +288,9 @@ async def on_message(ctx):
 ##            await ctx.send("shhh")
 ##            return await ctx.delete()
         
-    #Yes or No command
-    if (ctx.content[0:3] == "yes") and (ctx.author != client.user):
-        noStr = "no" + ctx.content[3:]
-        return await ctx.channel.send(noStr)
-    elif (ctx.content[0:2] == "no") and (ctx.author != client.user):
-        noStr = "yes" + ctx.content[2:]
-        return await ctx.channel.send(noStr)
-    
+    if ((ctx.content[0:6 ] == "c gang") or (ctx.content[0:6] == "C gang")) and (ctx.author != client.user):
+        print("ASD")
+        await ctx.add_reaction("🍇")
     #1/1000 chance for hannah or reminder
     if ctx.author != client.user and randNumba == 999:
         return await ctx.channel.send(file=discord.File("hannah2.png"))
