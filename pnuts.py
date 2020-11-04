@@ -370,5 +370,5 @@ async def on_message(ctx):
         print("Where:",ctx.guild,"-",ctx.channel)
         return await client.process_commands(ctx)
     
-client.run("NzQ3NTI5NzA1OTg0NDkxNTYx.X0QNSg.cFH9NUnCyIt0c6ryv_f4t4WO1-s")
+client.run("")
 
