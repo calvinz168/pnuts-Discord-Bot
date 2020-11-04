@@ -40,16 +40,23 @@ async def on_ready():
     await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="c gang"))
     print("Bot is ready")
 
-@client.event
-async def on_disconnect():
-    mcGen = client.get_channel(747629690638041119)
-    await mcGen.edit(topic="Not Ready")
+##@client.event
+##async def on_disconnect():
+##    mcGen = client.get_channel(747629690638041119)
+##    await mcGen.edit(topic="Not Ready")
 
 @client.event
 async def on_command_error(ctx, error):
-     if isinstance(error, commands.CommandNotFound):  # fails silently
+     if isinstance(error, commands.CommandNotFound):
+        # fails silently, else you get error every time a message received is not a command
         pass
-    
+
+@client.event
+async def on_message_error(ctx, error):
+    if isinstance(error, commands.forbidden):
+        # fails silently, on DM
+        pass
+
 ##@client.command(pass_context=True)
 ##async def join(ctx):
 ##    print(ctx)
@@ -62,6 +69,11 @@ async def join(ctx):
     channel = ctx.message.author.voiceChannel
     print(channel)
     #await client.join_voice_channel(channel)
+
+@client.command()
+async def kick(ctx, member: discord.Member):
+    await ctx.channel.send(member)
+    await client.disconnect(member)
 
 @client.event
 async def on_member_update(before, after):
@@ -120,13 +132,13 @@ async def grape(ctx):
 @client.command(aliases = ["No","Nah","nah","Nope","nope"])
 async def no(ctx, *args):
     yesStr = "yes "
-    yesStr = yesStr + ("".join(args[:]))
+    yesStr = yesStr + (" ".join(args[:]))
     await ctx.send(yesStr)
 
 @client.command(aliases = ["Yes","Yep","yep","Yeah","yeah","Ye","ye"])
 async def yes(ctx, *args):
     yesStr = "no "
-    yesStr = yesStr + ("".join(args[:]))
+    yesStr = yesStr + (" ".join(args[:]))
     await ctx.send(yesStr)
     
 #math -----------------------  
@@ -175,12 +187,17 @@ async def divide(ctx, arg, arg2,):
 #pics -----------------------  
 @client.command(aliases = ["Pic","PIC","Picture","picture"])
 async def pic(ctx,arg):
-    picMat = [["josh",11],["adam",12],["marcus",5],["calvin",12],["vivian",9],["caleb",15],["caitlin",5],["hannah",2]]
+    arg = arg.lower()
+    picMat = [["josh",11],["adam",12],["marcus",5],["calvin",12],["vivian",11],["caleb",15],["caitlin",5],["hannah",2]]
     for i in range(0,len(picMat)):
         if arg == picMat[i][0]:
             rand = random.randint(1,picMat[i][1])
             return await ctx.send(file=discord.File(f'{picMat[i][0]}{rand}.png'))
 
+@client.command(aliases = ["Logan"])
+async def logan(ctx):
+    randLog = random.randint(100,107)
+    return await ctx.send(file=discord.File(f'{randLog}.jpg'))
 
 #utility commands -----------------------  
 @client.command()
@@ -188,7 +205,6 @@ async def t(ctx):
     print(ctx.author)
     receiverMat = [["calvin1",calvin1],["nathan",nathan],["caleb",caleb],["adam",adam],["marcus",marcus],["vivian",vivian],["caitlin",caitlin],["mcGen",mcGen],["pnutGen",pnutGen]]
     if ((ctx.author == calvin1) or (ctx.author == calvin2)):
-        print("ASD")
         await ctx.message.delete()
         print("")
         print("SEND MESSAGE--------------------")
@@ -221,7 +237,7 @@ async def weather(ctx):
         tempCel = round(int(y["temp"]) - 273.13)
         await ctx.send(f"Displaying weather for {city_name}:")
         await ctx.send(f"Current temperature is: {tempCel}")
-        await ctx.send(f"Current pressure is: {y['pressure']} hpa")
+        await ctx.send(f"Current pressure is: {y['pressure']} hPa")
         await ctx.send(f"Current humidity is: {y['humidity']} %")
         await ctx.send(f"Current weather is: {z[0]['description']}")
     else: 
@@ -232,20 +248,45 @@ async def time(ctx):
     tim = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     await ctx.send(tim)
 
-@client.command(aliases = ["Map"])
+@client.command(aliases = ["Map","MAP","mAP","MaP"])
 async def map(ctx):
     return await ctx.send(random.randint(1,31))
 
 @client.command()
 async def ping(ctx,user:discord.Member,arg):
+    global channel,calvin1,nathan,caleb,adam,marcus,vivian
     if ctx.author != nathan:
         try:
             for i in range(0,int(arg)):
                 await ctx.send(user.mention)
         except:
             await ctx.send("Missing argument")
-    print(ctx.message)
 
+@client.command()
+async def pingm(ctx,user:discord.Member,arg,arg2):
+    for i in range(0,int(arg)):
+        asd = user.mention, arg2
+        await ctx.send(asd)
+          
+##@client.command()
+##async def ping(ctx,user:discord.Member,arg):
+##    if ctx.author != nathan:
+##        if arg == "STOP":
+##            pingOn == False
+##            
+##        while pingOn == True:
+##
+##            for i in range(0,int(arg)):
+##                await ctx.send(user.mention)
+##        except:
+##            await ctx.send("Missing argument")
+##    print(ctx.message)
+    
+#@client.command()
+#async def stop(ctx):
+#    if pingOn:
+        
+    
 @client.command(aliases = ["8ball", "eightBall"])
 async def eightball(ctx):
     rand8 = random.randint(0,9)
@@ -256,7 +297,6 @@ async def eightball(ctx):
 async def mute(ctx, member: discord.Member):
     print("mute")
     if ctx.message.author == calvin1 or ctx.message.author == adam :
-        print("ASD")
         role = discord.utils.get(member.server.roles, name='Muted')
         await client.add_roles(member, role)
 
@@ -270,23 +310,46 @@ async def vote(ctx):
 
 @client.event
 async def on_message(ctx):
+    tim = datetime.now().strftime('%H:%M:%S')
+    a6 = client.get_user(344920710378029076)
+    nathan = client.get_user(404377415331217408)
     tiananmen = ["June 4 1989","june 4 1989","june 4th 1989","June 4th 1989","06 04 1989"
                  ,"June 4, 1989","june 4, 1989","1989 June 4","1989 june 4","1989 4 June"
                  ,"1989 4 june","06/04/89","06/04/1989","j u n e  4  1 9 8 9","the fourth of june 1989"]
     randNumba = random.randint(1,1000)
     groovy = client.get_user(234395307759108106)
     #Mute Nathan
-##    if ctx.author == vivian:
-##        print("\n")
-##        print("Message-------------------------")
-##        print(f"Author: ",{ctx.author})
-##        print("Message:",ctx.content)
-##        await ctx.send("shut up nerd")
-##        return await ctx.delete()
-##    for i in tiananmen:
-##        if ctx.content == i:
-##            await ctx.send("shhh")
-##            return await ctx.delete()
+
+    if ctx.author == calvin1 or ctx.author == calvin2:
+        randVivMessage = random.randint(1,100)
+        print("\n")
+        print("Message-------------------------")
+        print(f"Author: ",ctx.author)
+        print("Message:",ctx.content)
+        await ctx.delete()
+
+        #editStr = "~~" + ctx.content + "~~"
+        #editStr = "**" + ctx.content + "**"
+        editStr = ctx.content
+        #await ctx.channel.send(f"nigvian Today at {tim}:")
+        #await ctx.channel.send(" ")
+        embe = discord.Embed(title = f"{ctx.author} Today at {tim}:",description = editStr,color = 0xff0000)    
+        await ctx.channel.send(embed = embe)
+        return await client.process_commands(ctx)
+        #return await ctx.channel.send("shut up nerd")
+    
+    if ctx.author == vivian:
+        print("\n")
+        print("Message-------------------------")
+        print(f"Author: ",ctx.author)
+        print("Message:",ctx.content)
+        await ctx.channel.send("shut up nerd")
+        return await ctx.delete()
+        
+    for i in tiananmen:
+        if ctx.content == i:
+            await ctx.channel.send("shhh")
+            return await ctx.delete()
         
     if ((ctx.content[0:6 ] == "c gang") or (ctx.content[0:6] == "C gang")) and (ctx.author != client.user):
         print("ASD")
@@ -294,9 +357,11 @@ async def on_message(ctx):
     #1/1000 chance for hannah or reminder
     if ctx.author != client.user and randNumba == 999:
         return await ctx.channel.send(file=discord.File("hannah2.png"))
-    if ctx.author != client.user and randNumba == 2:
+    elif ctx.author != client.user and randNumba == 2:
         return await ctx.channel.send("3. New fucking rule, if you say @ everyone I'm literally gonna revoke your perms")
-    elif ctx.author != client.user or ctx.author != groovy:
+    elif ctx.author != client.user and ctx.author != groovy:
+        pnuts = client.get_channel(747629690638041119)
+        #await pnuts.send(a6.mention)
         print("\n")
         print("Message-------------------------")
         print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
